@@ -1,57 +1,113 @@
-# Project Name
+---
+description: This sample template provides a basic Azure Functions project in C# (HTTP triggers) that's ready to run locally and can be easily deployed to Azure.
+page_type: sample
+products:
+- azure-functions
+- azure
+- endtra-id
+urlFragment: starter-http-trigger-csharp
+languages:
+- csharp
+- bicep
+- azdeveloper
+---
 
-(short, 1-3 sentenced, description of the project)
+# Starter template for Flex Consumption plan apps | Azure Functions
 
-## Features
+This sample template provides a set of basic HTTP trigger functions in C# (isolated process mode) that are ready to run locally and can be easily deployed to a function app in Azure Functions.  
 
-This project framework provides the following features:
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=575770869)
 
-* Feature 1
-* Feature 2
-* ...
+## Run in your local environment
 
-## Getting Started
+The project is designed to run on your local computer, provided you have met the [required prerequisites](#prerequisites). You can run the project locally in these environments:
+
++ [Using Azure Functions Core Tools (CLI)](#using-azure-functions-core-tools-cli)
++ [Using Visual Studio](#using-visual-studio)
++ [Using Visual Studio Code](#using-visual-studio-code)
 
 ### Prerequisites
 
-(ideally very short, if any)
++ [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) 
++ [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
++ Start Azurite storage emulator. See [this page](https://learn.microsoft.com/azure/storage/common/storage-use-azurite) for how to configure and start the Azurite emulator for Local Storage.
 
-- OS
-- Library version
-- ...
+### Prepare your local environment
+1) Create a file named `local.settings.json` in http directory and add the following:
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+  }
+}
+```
 
-### Installation
+### Using Azure Functions Core Tools (CLI)
 
-(ideally very short)
+1) Open a new terminal and do the following:
 
-- npm install [package name]
-- mvn install
-- ...
+```bash
+cd FunctionHTTP
+func start
+```
 
-### Quickstart
-(Add steps to get up and running quickly)
+2) Test a Web hook or GET using the browser to open http://localhost:7071/api/httpget
 
-1. git clone [repository clone url]
-2. cd [repository name]
-3. ...
+3) Test a POST using your favorite REST client, e.g. [RestClient in VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), PostMan, curl.  `test.http` has been provided to run this quickly.
+Or in a new terminal run the following:
 
+```bash
+curl -i -X POST http://localhost:7071/api/httppostbody \
+  -H "Content-Type: text/json" \
+  --data-binary "@testdata.json"
+```
 
-## Demo
+### Using Visual Studio
 
-A demo app is included to show how to use the project.
+1) Open `starter.sln` using Visual Studio 2022 or later.
+2) Press Run/F5 to run in the debugger
+3) Use same approach above to test using an HTTP REST client
 
-To run the demo, follow these steps:
+### Using Visual Studio Code
 
-(Add steps to start up the demo)
+1) Open this folder in a new terminal
+2) Open VS Code by entering `code .` in the terminal
+3) Make sure the [Azure Functions extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) is installed
+4) Add needed files to the **.vscode** folder by opening the command palette (`Crtl+Shift+P/Cmd+Shift+P` and selecting *"Azure Functions: Initialize project for use with VS Code"* (select `starters\http\dotnet\http` project when prompted to set a default)
+5) Press Run/Debug (F5) to run in the debugger
+6) Use same approach above to test using an HTTP REST client
 
-1.
-2.
-3.
+## Source Code
 
-## Resources
+The key code that makes this work is as follows in `./http/httpGetFunction.cs` and `./http/httpPostBodyFunction.cs`.  The async Run function is marked as an Azure Function using the Function attribute.  This code shows how to handle an ordinary Web hook GET or a POST that sends a `person` object in the request body as JSON.  
 
-(Any additional resources or related projects)
+```csharp
+[Function("httpget")]
+public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
+{
+    return new OkObjectResult("Welcome to Azure Functions!");
+}
+```
 
-- Link to supporting information
-- Link to similar sample
-- ...
+```csharp
+[Function("httppostbody")]        
+public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+    [FromBody] Person person)
+{
+    return new OkObjectResult(person);
+}
+```
+
+## Deploy to Azure
+
+The easiest way to deploy this app is using the [Azure Dev CLI aka AZD](https://aka.ms/azd).  If you open this repo in GitHub CodeSpaces the AZD tooling is already preinstalled.
+
+To provision:
+
+```bash
+azd up
+```
+
+Note that `azd deploy` and Visual Studio does not yet work to publish Flex Consumption apps. Please use Azure Functions Core Tools, Az CLI or VS Code alternatives instead to deploy your app zip to these Flex resources.
