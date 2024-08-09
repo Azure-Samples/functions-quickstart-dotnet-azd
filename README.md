@@ -12,7 +12,7 @@ languages:
 - azdeveloper
 ---
 
-# Azure Functions C# HTTP Tirgger using AZD
+# Azure Functions C# HTTP Trigger using AZD
 
 This sample template provides a set of basic HTTP trigger functions in C# (isolated process mode) that are ready to run locally and can be easily deployed to a function app in Azure Functions.  
 
