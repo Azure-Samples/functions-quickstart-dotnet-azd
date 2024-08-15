@@ -1,5 +1,5 @@
 ---
-description: This sample template provides a basic Azure Functions project in C# (HTTP triggers) that's ready to run locally and can be easily deployed to Azure.
+description: This repository contains a Azure Functions HTTP trigger quickstart written in C# and deployed to Azure Flex Consumption using Azure Developer CLI (AZD). This sample uses managed identity and a virtual network to insure it is secure by default.
 page_type: sample
 products:
 - azure-functions
