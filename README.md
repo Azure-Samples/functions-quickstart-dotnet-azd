@@ -1,5 +1,5 @@
 ---
-description: This repository contains a Azure Functions HTTP trigger quickstart written in C# and deployed to Azure Flex Consumption using Azure Developer CLI (AZD). This sample uses managed identity and a virtual network to insure it is secure by default.
+description: This repository contains a Azure Functions HTTP trigger quickstart written in C# and deployed to Azure Functions Flex Consumption using the Azure Developer CLI (AZD). This sample uses managed identity and a virtual network to insure it is secure by default.
 page_type: sample
 products:
 - azure-functions
