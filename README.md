@@ -4,7 +4,7 @@ page_type: sample
 products:
 - azure-functions
 - azure
-- endtra-id
+- entra-id
 urlFragment: starter-http-trigger-csharp
 languages:
 - csharp
