@@ -2,7 +2,7 @@ GET http://localhost:7071/api/httpget HTTP/1.1
 
 ###
 
-POST http://localhost:7071/api/httppostbody HTTP/1.1
+POST http://localhost:7071/api/httppost HTTP/1.1
 content-type: application/json
 
 {
