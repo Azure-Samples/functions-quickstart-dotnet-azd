@@ -66,9 +66,9 @@ curl -i -X POST http://localhost:7071/api/httppostbody \
 
 ### Using Visual Studio
 
-1) Open `starter.sln` using Visual Studio 2022 or later.
-2) Press Run/F5 to run in the debugger
-3) Use same approach above to test using an HTTP REST client (note the port may be different than 7071)
+1) Open `FunctionHttp.sln` using Visual Studio 2022 or later.
+3) Press Run/F5 to run in the debugger
+4) Use same approach above to test using an HTTP REST client (note the port may be different than 7071)
 
 ### Using Visual Studio Code
 
