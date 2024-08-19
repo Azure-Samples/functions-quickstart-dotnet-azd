@@ -59,7 +59,7 @@ func start
 Or in a new terminal run the following:
 
 ```bash
-curl -i -X POST http://localhost:7071/api/httppostbody \
+curl -i -X POST http://localhost:7071/api/httppost \
   -H "Content-Type: text/json" \
   --data-binary  "@testdata.json"
 ```
@@ -85,17 +85,31 @@ The key code that makes this work is as follows in `./http/httpGetFunction.cs` a
 
 ```csharp
 [Function("httpget")]
-public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
+public IActionResult Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
 {
-    return new OkObjectResult("Welcome to Azure Functions!");
+    var name = req.Query["name"];
+
+    var returnValue = string.IsNullOrEmpty(name)
+        ? "Hello, World."
+        : $"Hello, {name}.";
+
+    return new OkObjectResult(returnValue);
 }
 ```
 
 ```csharp
-[Function("httppostbody")]        
-public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+[Function("httppost")]
+public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
     [FromBody] Person person)
-{
+{   
+    if (string.IsNullOrEmpty(person.Name))
+    {
+        _logger.LogInformation("C# HTTP trigger function processed a request with no name provided.");
+        return new BadRequestObjectResult("Please pass a name in the request body.");
+    }
+    
+    _logger.LogInformation($"C# HTTP trigger function processed a request for {person.Name}!");
     return new OkObjectResult(person);
 }
 ```

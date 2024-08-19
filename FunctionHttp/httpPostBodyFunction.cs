@@ -16,10 +16,17 @@ namespace Company.Function
             _logger = loggerFactory.CreateLogger<HttpPostBody>();
         }
 
-        [Function("httppostbody")]
+        [Function("httppost")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
             [FromBody] Person person)
-        {
+        {   
+            if (string.IsNullOrEmpty(person.Name))
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request with no name provided.");
+                return new BadRequestObjectResult("Please pass a name in the request body.");
+            }
+            
+            _logger.LogInformation($"C# HTTP trigger function processed a request for {person.Name}!");
             return new OkObjectResult(person);
         }
     }
