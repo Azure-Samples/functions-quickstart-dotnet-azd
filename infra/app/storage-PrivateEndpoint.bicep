@@ -23,6 +23,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing 
 }
 
 var blobPrivateDNSZoneName = format('privatelink.blob.{0}', environment().suffixes.storage)
+var blobPrivateDnsZoneVirtualNetworkLinkName = format('{0}-link-{1}', resourceName, take(toLower(uniqueString(resourceName, virtualNetworkName)), 4))
 
 // Private DNS Zones
 resource blobPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
@@ -38,7 +39,7 @@ resource blobPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 // Virtual Network Links
 resource blobPrivateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: blobPrivateDnsZone
-  name: 'link_to_${toLower(virtualNetworkName)}'
+  name: blobPrivateDnsZoneVirtualNetworkLinkName
   location: 'global'
   tags: tags
   properties: {
@@ -51,13 +52,13 @@ resource blobPrivateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones
 
 // Private Endpoints
 resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = {
-  name: 'blob-PrivateEndpoint'
+  name: 'blob-private-endpoint'
   location: location
   tags: tags
   properties: {
     privateLinkServiceConnections: [
       {
-        name: 'blobPrivateEndpointConnection'
+        name: 'blobPrivateLinkConnection'
         properties: {
           privateLinkServiceId: storageAccount.id
           groupIds: [
@@ -74,7 +75,7 @@ resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = {
 
 resource blobPrivateDnsZoneGroupName 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
   parent: blobPrivateEndpoint
-  name: 'sbPrivateDnsZoneGroup'
+  name: 'blobPrivateDnsZoneGroup'
   properties: {
     privateDnsZoneConfigs: [
       {
