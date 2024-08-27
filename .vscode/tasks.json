@@ -12,7 +12,7 @@
 			"type": "process",
 			"problemMatcher": "$msCompile",
 			"options": {
-				"cwd": "${workspaceFolder}/FunctionHttp"
+				"cwd": "${workspaceFolder}/http"
 			}
 		},
 		{
@@ -31,7 +31,7 @@
 			},
 			"problemMatcher": "$msCompile",
 			"options": {
-				"cwd": "${workspaceFolder}/FunctionHttp"
+				"cwd": "${workspaceFolder}/http"
 			}
 		},
 		{
@@ -47,7 +47,7 @@
 			"type": "process",
 			"problemMatcher": "$msCompile",
 			"options": {
-				"cwd": "${workspaceFolder}/FunctionHttp"
+				"cwd": "${workspaceFolder}/http"
 			}
 		},
 		{
@@ -64,14 +64,14 @@
 			"dependsOn": "clean release (functions)",
 			"problemMatcher": "$msCompile",
 			"options": {
-				"cwd": "${workspaceFolder}/FunctionHttp"
+				"cwd": "${workspaceFolder}/http"
 			}
 		},
 		{
 			"type": "func",
 			"dependsOn": "build (functions)",
 			"options": {
-				"cwd": "${workspaceFolder}/FunctionHttp/bin/Debug/net8.0"
+				"cwd": "${workspaceFolder}/http/bin/Debug/net8.0"
 			},
 			"command": "host start",
 			"isBackground": true,

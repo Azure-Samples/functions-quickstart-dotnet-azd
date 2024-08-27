@@ -20,15 +20,13 @@ namespace Company.Function
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
             [FromBody] Person person)
         {   
-            if (string.IsNullOrEmpty(person.Name))
-            {
-                _logger.LogInformation("C# HTTP trigger function processed a request with no name provided.");
-                return new BadRequestObjectResult("Please pass a name in the request body.");
-            }
+            var returnValue = string.IsNullOrEmpty(person.Name)
+                ? "Hello, World."
+                : $"Hello, {person.Name}.";
             
             _logger.LogInformation($"C# HTTP trigger function processed a request for {person.Name}!");
-            return new OkObjectResult(person);
+            return new OkObjectResult(returnValue);
         }
     }
-    public record Person([property: JsonPropertyName("name")] string Name, [property: JsonPropertyName("age")] int Age);
+    public record Person([property: JsonPropertyName("name")] string Name);
 }

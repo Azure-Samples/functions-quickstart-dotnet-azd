@@ -2,10 +2,13 @@ GET http://localhost:7071/api/httpget HTTP/1.1
 
 ###
 
+GET http://localhost:7071/api/httpget?name=Developer HTTP/1.1
+
+###
+
 POST http://localhost:7071/api/httppost HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Awesome Developer",
-    "age": 25 
+    "name": "Developer"
 }
