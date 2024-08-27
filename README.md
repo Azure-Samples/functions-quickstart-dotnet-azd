@@ -23,8 +23,8 @@ This sample template provides a set of basic HTTP trigger functions in C# (isola
 The project is designed to run on your local computer, provided you have met the [required prerequisites](#prerequisites). You can run the project locally in these environments:
 
 + [Using Azure Functions Core Tools (CLI)](#using-azure-functions-core-tools-cli)
-+ [Using Visual Studio](#using-visual-studio)
 + [Using Visual Studio Code](#using-visual-studio-code)
++ [Using Visual Studio](#using-visual-studio)
 
 ### Prerequisites
 
@@ -32,8 +32,15 @@ The project is designed to run on your local computer, provided you have met the
 + [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
 + Start Azurite storage emulator. See [this page](https://learn.microsoft.com/azure/storage/common/storage-use-azurite) for how to configure and start the Azurite emulator for Local Storage.
 
+### Get repo on your local machine
+Run the following GIT command to clone this repository to your local machine.
+```bash
+git clone https://github.com/Azure-Samples/functions-quickstart-dotnet-azd.git
+cd functions-quickstart-dotnet-azd/http
+```
+
 ### Prepare your local environment
-1) Create a file named `local.settings.json` in FunctionHttp directory and add the following:
+Create a file named `local.settings.json` in `http` folder and add the following:
 ```json
 {
     "IsEncrypted": false,
@@ -44,40 +51,36 @@ The project is designed to run on your local computer, provided you have met the
 }
 ```
 
-### Using Azure Functions Core Tools (CLI)
+### Using Functions (CLI)
 
 1) Open a new terminal and do the following:
 
 ```bash
-cd FunctionHttp
 func start
 ```
 
-2) Test a Web hook or GET using the browser to open http://localhost:7071/api/httpget
+2) Test the HTTP GET trigger using the browser to open http://localhost:7071/api/httpget
 
-3) Test a POST using your favorite REST client, e.g. [RestClient in VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), PostMan, curl. `test.http` has been provided to run this quickly.
+3) Test the HTTP POST trigger using your favorite REST client (e.g. [RestClient in VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)). `test.http` has been provided to run this quickly.
 Or in a new terminal run the following:
 
 ```bash
-curl -i -X POST http://localhost:7071/api/httppost \
-  -H "Content-Type: text/json" \
-  --data-binary  "@testdata.json"
+curl -i -X POST http://localhost:7071/api/httppost -H "Content-Type: text/json" -d "{\"name\": \"Awesome Developer\", \"age\": \"25\"}"
 ```
-
-### Using Visual Studio
-
-1) Open `FunctionHttp.sln` using Visual Studio 2022 or later.
-3) Press Run/F5 to run in the debugger
-4) Use same approach above to test using an HTTP REST client (note the port may be different than 7071)
 
 ### Using Visual Studio Code
 
 1) Open this folder in a new terminal
 2) Open VS Code by entering `code .` in the terminal
 3) Make sure the [Azure Functions extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) is installed
-4) Add required files to the `.vscode` folder by opening the command palette using `Crtl+Shift+P` (or `Cmd+Shift+P` on Mac) and selecting *"Azure Functions: Initialize project for use with VS Code"* (select `starters\http\dotnet\http` project when prompted to set a default)
-5) Press Run/Debug (F5) to run in the debugger
-6) Use same approach above to test using an HTTP REST client
+4) Press Run/Debug (F5) to run in the debugger (select "Debug anyway" if prompted about local emulater not running) 
+5) Use same approach above to test using an HTTP REST client
+
+### Using Visual Studio
+
+1) Open `http.sln` using Visual Studio 2022 or later.
+3) Press Run/F5 to run in the debugger
+4) Use same approach above to test using an HTTP REST client (note the port may be different than 7071)
 
 ## Source Code
 

@@ -14,16 +14,17 @@ namespace Company.Function
             _logger = loggerFactory.CreateLogger<httpGetFunction>();
         }
 
-        [Function("httpget")]
-        public IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+[Function("httpget")]
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get")]
+          HttpRequest req,
+          string name)
         {
-            var name = req.Query["name"];
-
             var returnValue = string.IsNullOrEmpty(name)
                 ? "Hello, World."
                 : $"Hello, {name}.";
-
+ 
+            _logger.LogInformation($"C# HTTP trigger function processed a request for {returnValue}.");
+ 
             return new OkObjectResult(returnValue);
         }
     }
