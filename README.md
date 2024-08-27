@@ -36,6 +36,7 @@ The project is designed to run on your local computer, provided you have met the
 Run the following GIT command to clone this repository to your local machine.
 ```bash
 git clone https://github.com/Azure-Samples/functions-quickstart-dotnet-azd.git
+cd functions-quickstart-dotnet-azd\http
 ```
 
 ### Prepare your local environment
@@ -55,7 +56,6 @@ Create a file named `local.settings.json` in `http` folder and add the following
 1) Open a new terminal and do the following:
 
 ```bash
-cd http
 func start
 ```
 
