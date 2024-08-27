@@ -2,9 +2,9 @@
 
 name: starter-dotnet8-flex-func
 metadata:
-  template: starter-dotnet8-flex-func@0.0.2-beta
+  template: functions-quickstart-dotnet-azd@1.0.0
 services:
   processor:
-    project: ./Functionhttp/
+    project: ./http/
     language: dotnet
     host: function

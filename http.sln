@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionHttp", "FunctionHttp\FunctionHttp.csproj", "{32C6DAE7-2329-47AB-8551-2A9EF0353C9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "http", "http\http.csproj", "{32C6DAE7-2329-47AB-8551-2A9EF0353C9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

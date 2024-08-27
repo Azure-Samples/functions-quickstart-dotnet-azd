@@ -24,6 +24,7 @@ namespace Company.Function
                 ? "Hello, World."
                 : $"Hello, {name}.";
 
+            _logger.LogInformation($"C# HTTP trigger function processed a request for {name}!");
             return new OkObjectResult(returnValue);
         }
     }
