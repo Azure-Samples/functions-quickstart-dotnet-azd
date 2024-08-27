@@ -65,7 +65,7 @@ func start
 Or in a new terminal run the following:
 
 ```bash
-curl -i -X POST http://localhost:7071/api/httppost -H "Content-Type: text/json" -d "{\"name\": \"Developer\", \"age\": \"25\"}"
+curl -i -X POST http://localhost:7071/api/httppost -H "Content-Type: text/json" -d "{\"name\": \"Awesome Developer\", \"age\": \"25\"}"
 ```
 
 ### Using Visual Studio Code
