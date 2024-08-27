@@ -36,7 +36,7 @@ The project is designed to run on your local computer, provided you have met the
 Run the following GIT command to clone this repository to your local machine.
 ```bash
 git clone https://github.com/Azure-Samples/functions-quickstart-dotnet-azd.git
-cd functions-quickstart-dotnet-azd\http
+cd functions-quickstart-dotnet-azd/http
 ```
 
 ### Prepare your local environment
@@ -65,7 +65,7 @@ func start
 Or in a new terminal run the following:
 
 ```bash
-curl -i -X POST http://localhost:7071/api/httppost -H "Content-Type: text/json" -d "{\"name\": \"Developer\"}"
+curl -i -X POST http://localhost:7071/api/httppost -H "Content-Type: text/json" -d "{\"name\": \"Developer\", \"age\": \"25\"}"
 ```
 
 ### Using Visual Studio Code
