@@ -10,6 +10,6 @@ POST http://localhost:7071/api/httppost HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Developer",
+    "name": "Awesome Developer",
     "age": 25
 }
