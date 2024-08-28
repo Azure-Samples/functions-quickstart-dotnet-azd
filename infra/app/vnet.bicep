@@ -32,7 +32,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
         id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetName, 'private-endpoints-subnet')
         properties: {
           addressPrefixes: [
-            '10.0.1.0/28' // allows for 11 usable IP addresses
+            '10.0.1.0/24'
           ]
           delegations: []
           privateEndpointNetworkPolicies: 'Disabled'
@@ -45,7 +45,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
         id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetName, 'app')
         properties: {
           addressPrefixes: [
-            '10.0.2.0/26' // allows for 59 usable IP addresses
+            '10.0.2.0/24'
           ]
           delegations: [
             {
