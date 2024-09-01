@@ -1,0 +1,25 @@
+{
+    "name": "Functions Quickstarts Codespace",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+      "ms-azuretools.vscode-docker"
+    ],
+    "mounts": [
+      // Mount docker-in-docker library volume
+      "source=codespaces-linux-var-lib-docker,target=/var/lib/docker,type=volume"
+    ],
+    // Always run image-defined docker-init.sh to enable docker-in-docker
+    "overrideCommand": false,
+    "remoteUser": "codespace",
+    "runArgs": [
+      // Enable ptrace-based debugging for Go in container
+      "--cap-add=SYS_PTRACE",
+      "--security-opt",
+      "seccomp=unconfined",
+  
+      // Enable docker-in-docker configuration
+      "--init",
+      "--privileged"
+    ],
+  }
+  
