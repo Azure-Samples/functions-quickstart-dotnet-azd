@@ -2,7 +2,9 @@
     "name": "Functions Quickstarts Codespace",
     "dockerFile": "Dockerfile",
     "extensions": [
-      "ms-azuretools.vscode-docker"
+      "ms-azuretools.vscode-docker",
+      "ms-azuretools.vscode-azurefunctions",
+      "GitHub.copilot"
     ],
     "mounts": [
       // Mount docker-in-docker library volume
