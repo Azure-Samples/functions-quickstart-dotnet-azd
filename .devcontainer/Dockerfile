@@ -20,5 +20,8 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > mic
     && sudo apt-get update \
     && sudo apt-get install -y azure-functions-core-tools-4
 
+# Install Azure Developer CLI
+RUN curl -fsSL https://aka.ms/install-azd.sh | bash
+
 # Install mechanical-markdown for quickstart validations
 RUN pip install mechanical-markdown
