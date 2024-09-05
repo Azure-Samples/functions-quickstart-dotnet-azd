@@ -1,3 +1,6 @@
+# Tip: You might need to modify the port value on the 
+# localhost URL when debugging in Visual Studio.
+
 GET http://localhost:7071/api/httpget HTTP/1.1
 
 ###

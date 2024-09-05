@@ -17,9 +17,11 @@ languages:
 
 This template repository contains an HTTP trigger reference sample for functions written in C# (isolated process mode) and deployed to Azure using the Azure Developer CLI (`azd`). The sample uses managed identity and a virtual network to make sure deployment is secure by default.
 
-This project is designed to run on your local computer. You can also:
+This project is designed to run on your local computer. You can also use GitHub Codespaces:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=836901178)
+
+This codespace is already configured with the required tools to complete this tutorial using either `azd` or Visual Studio Code. If you're working a codespace, skip down to [Prepare your local environment](#prepare-your-local-environment).
 
 ## Prerequisites
 
@@ -75,18 +77,31 @@ You can initialize a project from this `azd` template in one of these ways:
     func start
     ```
 
-2. From your HTTP test tool in a new terminal (or from your browser), call the HTTP GET endpoint: <http://localhost:7071/api/httpget>
+1. From your HTTP test tool in a new terminal (or from your browser), call the HTTP GET endpoint: <http://localhost:7071/api/httpget>
 
-3. Test the HTTP POST trigger with a payload using your favorite secure HTTP test tool. This example uses the `curl` tool with payload data from the [`testdata.json`](./http/testdata.json) project file:
+1. Test the HTTP POST trigger with a payload using your favorite secure HTTP test tool. This example uses the `curl` tool with payload data from the [`testdata.json`](./http/testdata.json) project file:
 
+    ### Cmd\bash
+	
     ```shell
     curl -i http://localhost:7071/api/httppost -H "Content-Type: text/json" -d @testdata.json
     ```
+    
+    You can also use the `Invoke-RestMethod` cmdlet in PowerShell:
+
+    ### PowerShell
+	
+	```powershell
+    Invoke-RestMethod -Uri http://localhost:7129/api/httppost -Method Post -ContentType "application/json" -InFile "testdata.json"
+    ```
+
+1. When you're done, press Ctrl+C in the terminal window to stop the `func.exe` host process.
 
 ## Run your app using Visual Studio Code
 
 1. Open the `http` app folder in a new terminal.
 1. Run the `code .` code command to open the project in Visual Studio Code.
+1. In the command palette (F1), type `Azurite: Start`, which enables debugging without warnings.
 1. Press **Run/Debug (F5)** to run in the debugger. Select **Debug anyway** if prompted about local emulator not running.
 1. Send GET and POST requests to the `httpget` and `httppost` endpoints respectively using your HTTP test tool (or browser for `httpget`). If you have the [RestClient](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, you can execute requests directly from the [`test.http`](./http/test.http) project file.
 
@@ -94,7 +109,7 @@ You can initialize a project from this `azd` template in one of these ways:
 
 1. Open the `http.sln` solution file in Visual Studio.
 1. Press **Run/F5** to run in the debugger. Make a note of the `localhost` URL endpoints, including the port, which might not be `7071`.
-1. Send GET and POST requests to the `httpget` and `httppost` endpoints respectively using your HTTP test tool (or browser for `httpget`). If you have the [RestClient](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, you can execute requests directly from the [`test.http`](./http/test.http) project file.
+1. Open the [`test.http`](./http/test.http) project file, update the port on the `localhost` URL (if needed), and then use the built-in HTTP client to call the `httpget` and `httppost` endpoints.
 
 ## Source Code
 
