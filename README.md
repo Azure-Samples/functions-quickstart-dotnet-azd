@@ -57,17 +57,17 @@ You can initialize a project from this `azd` template in one of these ways:
 
 ## Prepare your local environment
 
-1. Navigate to the `http` app folder and create a file in that folder named _local.settings.json_ that contains this JSON data:
+Navigate to the `http` app folder and create a file in that folder named _local.settings.json_ that contains this JSON data:
 
-    ```json
-    {
-        "IsEncrypted": false,
-        "Values": {
-            "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-            "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
-        }
+```json
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
     }
-    ```
+}
+```
 
 ## Run your app from the terminal
 
@@ -79,20 +79,22 @@ You can initialize a project from this `azd` template in one of these ways:
 
 1. From your HTTP test tool in a new terminal (or from your browser), call the HTTP GET endpoint: <http://localhost:7071/api/httpget>
 
-1. Test the HTTP POST trigger with a payload using your favorite secure HTTP test tool. This example uses the `curl` tool with payload data from the [`testdata.json`](./http/testdata.json) project file:
+1. Test the HTTP POST trigger with a payload using your favorite secure HTTP test tool.
 
-    ### Cmd\bash
-	
+    **Cmd\bash**
+
+    This example runs from the `http` folder and uses the `curl` tool with payload data from the [`testdata.json`](./http/testdata.json) project file:
+
     ```shell
     curl -i http://localhost:7071/api/httppost -H "Content-Type: text/json" -d @testdata.json
     ```
-    
-    You can also use the `Invoke-RestMethod` cmdlet in PowerShell:
 
-    ### PowerShell
-	
-	```powershell
-    Invoke-RestMethod -Uri http://localhost:7129/api/httppost -Method Post -ContentType "application/json" -InFile "testdata.json"
+    **PowerShell**
+
+    You can also use this `Invoke-RestMethod` cmdlet in PowerShell from the `http` folder:
+
+    ```powershell
+    Invoke-RestMethod -Uri http://localhost:7071/api/httppost -Method Post -ContentType "application/json" -InFile "testdata.json"
     ```
 
 1. When you're done, press Ctrl+C in the terminal window to stop the `func.exe` host process.
