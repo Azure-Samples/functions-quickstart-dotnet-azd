@@ -14,7 +14,7 @@ namespace Company.Function
             _logger = loggerFactory.CreateLogger<httpGetFunction>();
         }
 
-[Function("httpget")]
+        [Function("httpget")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get")]
           HttpRequest req,
           string name)
