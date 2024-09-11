@@ -191,4 +191,3 @@ When you're done working with your function app and related resources, you can u
 ```shell
 azd down
 ```
-
