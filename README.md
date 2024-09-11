@@ -127,4 +127,3 @@ To provision:
 azd up
 ```
 
-Note that Visual Studio does not yet work to publish Flex Consumption apps. Please use Azure Functions Core Tools, Az CLI or VS Code alternatives instead to deploy your app zip to these Flex resources.
