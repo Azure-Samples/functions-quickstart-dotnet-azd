@@ -42,5 +42,5 @@ module api '../core/host/functions-flexconsumption.bicep' = {
   }
 }
 
-output SERVICE_api_NAME string = api.outputs.name
+output SERVICE_API_NAME string = api.outputs.name
 output SERVICE_API_IDENTITY_PRINCIPAL_ID string = api.outputs.identityPrincipalId
