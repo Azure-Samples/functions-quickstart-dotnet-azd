@@ -1,3 +1,4 @@
+<!--
 ---
 name: Azure Functions C# HTTP Trigger using Azure Developer CLI
 description: This repository contains an Azure Functions HTTP trigger quickstart written in C# and deployed to Azure Functions Flex Consumption using the Azure Developer CLI (azd). The sample uses managed identity and a virtual network to make sure deployment is secure by default.
@@ -12,6 +13,7 @@ languages:
 - bicep
 - azdeveloper
 ---
+-->
 
 # Azure Functions C# HTTP Trigger using Azure Developer CLI
 
