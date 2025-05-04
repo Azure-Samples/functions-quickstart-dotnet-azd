@@ -1,4 +1,6 @@
 param name string
+@description('Primary location for all resources & Flex Consumption Function App')
+// @allowed(['australiaeast', 'centralindia', 'centralus', 'eastasia', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'northcentralus', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westcentralus', 'westeurope', 'westus2', 'eastus2euap'])
 param location string = resourceGroup().location
 param tags object = {}
 param applicationInsightsName string = ''
@@ -37,14 +39,14 @@ module api 'br/public:avm/res/web/site:0.15.1' = {
     name: name
     tags: union(tags, { 'azd-service-name': serviceName })
     serverFarmResourceId: appServicePlanId
+    managedIdentities: {
+      systemAssigned: identityType == 'SystemAssigned'
+      userAssignedResourceIds: [
+        '${identityId}'
+      ]
+    }
     functionAppConfig: {
       location: location
-      managedIdentities: {
-        systemAssigned: identityType == 'SystemAssigned'
-        userAssignedResourceIds: [
-          '${identityId}'
-        ]
-      }
       deployment: {
         storage: {
           type: 'blobContainer'
