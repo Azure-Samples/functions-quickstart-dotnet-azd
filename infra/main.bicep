@@ -6,8 +6,8 @@ targetScope = 'subscription'
 param environmentName string
 
 @minLength(1)
-@description('Primary location for all resources')
-@allowed(['australiaeast', 'eastasia', 'eastus', 'eastus2', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westus2', 'eastus2euap'])
+@description('Primary location for all resources & Flex Consumption Function App')
+@allowed(['australiaeast', 'centralindia', 'centralus', 'eastasia', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'northcentralus', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westcentralus', 'westeurope', 'westus2', 'eastus2euap'])
 @metadata({
   azd: {
     type: 'location'
