@@ -14,7 +14,7 @@ param environmentName string
   }
 })
 param location string
-param skipVnet bool = false
+param vnetEnabled bool
 param apiServiceName string = ''
 param apiUserAssignedIdentityName string = ''
 param applicationInsightsName string = ''
@@ -81,7 +81,7 @@ module api './app/api.bicep' = {
     identityClientId: apiUserAssignedIdentity.outputs.clientId
     appSettings: {
     }
-    virtualNetworkSubnetId: skipVnet ? '' : serviceVirtualNetwork.outputs.appSubnetID
+    virtualNetworkSubnetId: vnetEnabled ? serviceVirtualNetwork.outputs.appSubnetID : '' // Logic inverted
   }
 }
 
@@ -94,11 +94,11 @@ module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
     allowBlobPublicAccess: false
     allowSharedKeyAccess: false // Disable local authentication methods as per policy
     dnsEndpointType: 'Standard'
-    publicNetworkAccess: skipVnet ? 'Enabled' : 'Disabled'
-    networkAcls: skipVnet ? {} : {
+    publicNetworkAccess: vnetEnabled ? 'Disabled' : 'Enabled' // Logic inverted
+    networkAcls: vnetEnabled ? { // Logic inverted
       defaultAction: 'Deny'
       bypass: 'None'
-    }
+    } : {}
     blobServices: {
       containers: [{name: deploymentStorageContainerName}]
     }
@@ -122,7 +122,7 @@ module storageRoleAssignmentApi 'app/storage-Access.bicep' = {
 }
 
 // Virtual Network & private endpoint to blob storage
-module serviceVirtualNetwork 'app/vnet.bicep' =  if (!skipVnet) {
+module serviceVirtualNetwork 'app/vnet.bicep' =  if (vnetEnabled) { // Logic inverted
   name: 'serviceVirtualNetwork'
   scope: rg
   params: {
@@ -132,15 +132,18 @@ module serviceVirtualNetwork 'app/vnet.bicep' =  if (!skipVnet) {
   }
 }
 
-module storagePrivateEndpoint 'app/storage-PrivateEndpoint.bicep' = if (!skipVnet) {
+module storagePrivateEndpoint 'app/storage-PrivateEndpoint.bicep' = if (vnetEnabled) { // Logic inverted
   name: 'servicePrivateEndpoint'
   scope: rg
   params: {
     location: location
     tags: tags
     virtualNetworkName: !empty(vNetName) ? vNetName : '${abbrs.networkVirtualNetworks}${resourceToken}'
-    subnetName: skipVnet ? '' : serviceVirtualNetwork.outputs.peSubnetName
+    subnetName: vnetEnabled ? serviceVirtualNetwork.outputs.peSubnetName : '' // Keep conditional check for safety, though module won't run if !vnetEnabled
     resourceName: storage.outputs.name
+    enableBlob: true
+    enableQueue: false
+    enableTable: false
   }
 }
 

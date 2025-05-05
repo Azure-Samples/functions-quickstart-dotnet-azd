@@ -8,8 +8,8 @@
     "location": {
       "value": "${AZURE_LOCATION}"
     },
-    "skipVnet": {
-      "value": "${SKIP_VNET}"
+    "vnetEnabled": {
+      "value": "${VNET_ENABLED=true}"
     }
   }
 }
