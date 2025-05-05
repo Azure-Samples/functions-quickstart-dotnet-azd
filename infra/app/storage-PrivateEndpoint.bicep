@@ -1,28 +1,13 @@
-// Parameters
-@description('Specifies the name of the virtual network.')
 param virtualNetworkName string
-
-@description('Specifies the name of the subnet which contains the virtual machine.')
 param subnetName string
-
-@description('Specifies the resource name of the Storage resource with an endpoint.')
+@description('Specifies the storage account resource name')
 param resourceName string
-
-@description('Specifies the location.')
 param location string = resourceGroup().location
-
 param tags object = {}
-
-@description('Enable private endpoint for Blob storage.')
 param enableBlob bool = true
-
-@description('Enable private endpoint for Queue storage.')
 param enableQueue bool = false
-
-@description('Enable private endpoint for Table storage.')
 param enableTable bool = false
 
-// Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-08-01' existing = {
   name: virtualNetworkName
 }
@@ -31,92 +16,19 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing 
   name: resourceName
 }
 
-var blobPrivateDNSZoneName = format('privatelink.blob.{0}', environment().suffixes.storage)
-var blobPrivateDnsZoneVirtualNetworkLinkName = format('{0}-blob-link-{1}', resourceName, take(toLower(uniqueString(resourceName, virtualNetworkName)), 4))
+// Storage DNS zone names
+var blobPrivateDNSZoneName = 'privatelink.blob.${environment().suffixes.storage}'
+var queuePrivateDNSZoneName = 'privatelink.queue.${environment().suffixes.storage}'
+var tablePrivateDNSZoneName = 'privatelink.table.${environment().suffixes.storage}'
 
-var queuePrivateDNSZoneName = format('privatelink.queue.{0}', environment().suffixes.storage)
-var queuePrivateDnsZoneVirtualNetworkLinkName = format('{0}-queue-link-{1}', resourceName, take(toLower(uniqueString(resourceName, virtualNetworkName)), 4))
-
-var tablePrivateDNSZoneName = format('privatelink.table.{0}', environment().suffixes.storage)
-var tablePrivateDnsZoneVirtualNetworkLinkName = format('{0}-table-link-{1}', resourceName, take(toLower(uniqueString(resourceName, virtualNetworkName)), 4))
-
-// Private DNS Zones
-resource blobPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (enableBlob) {
-  name: blobPrivateDNSZoneName
-  location: 'global'
-  tags: tags
-  properties: {}
-  dependsOn: [
-    vnet
-  ]
-}
-
-resource queuePrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (enableQueue) {
-  name: queuePrivateDNSZoneName
-  location: 'global'
-  tags: tags
-  properties: {}
-  dependsOn: [
-    vnet
-  ]
-}
-
-resource tablePrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (enableTable) {
-  name: tablePrivateDNSZoneName
-  location: 'global'
-  tags: tags
-  properties: {}
-  dependsOn: [
-    vnet
-  ]
-}
-
-// Virtual Network Links
-resource blobPrivateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (enableBlob) {
-  parent: blobPrivateDnsZone
-  name: blobPrivateDnsZoneVirtualNetworkLinkName
-  location: 'global'
-  tags: tags
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet.id
-    }
-  }
-}
-
-resource queuePrivateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (enableQueue) {
-  parent: queuePrivateDnsZone
-  name: queuePrivateDnsZoneVirtualNetworkLinkName
-  location: 'global'
-  tags: tags
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet.id
-    }
-  }
-}
-
-resource tablePrivateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (enableTable) {
-  parent: tablePrivateDnsZone
-  name: tablePrivateDnsZoneVirtualNetworkLinkName
-  location: 'global'
-  tags: tags
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet.id
-    }
-  }
-}
-
-// Private Endpoints
-resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = if (enableBlob) {
-  name: 'blob-private-endpoint'
-  location: location
-  tags: tags
-  properties: {
+// AVM module for Blob Private Endpoint with private DNS zone
+module blobPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = if (enableBlob) {
+  name: 'blob-private-endpoint-deployment'
+  params: {
+    name: 'blob-private-endpoint'
+    location: location
+    tags: tags
+    subnetResourceId: '${vnet.id}/subnets/${subnetName}'
     privateLinkServiceConnections: [
       {
         name: 'blobPrivateLinkConnection'
@@ -128,32 +40,28 @@ resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = i
         }
       }
     ]
-    subnet: {
-      id: '${vnet.id}/subnets/${subnetName}'
+    customDnsConfigs: []
+    // Creates private DNS zone and links
+    privateDnsZoneGroup: {
+      name: 'blobPrivateDnsZoneGroup'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'storageBlobARecord'
+          privateDnsZoneResourceId: enableBlob ? privateDnsZoneBlobDeployment.outputs.resourceId : ''
+        }
+      ]
     }
   }
 }
 
-resource blobPrivateDnsZoneGroupName 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = if (enableBlob) {
-  parent: blobPrivateEndpoint
-  name: 'blobPrivateDnsZoneGroup'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'storageBlobARecord'
-        properties: {
-          privateDnsZoneId: blobPrivateDnsZone.id
-        }
-      }
-    ]
-  }
-}
-
-resource queuePrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = if (enableQueue) {
-  name: 'queue-private-endpoint'
-  location: location
-  tags: tags
-  properties: {
+// AVM module for Queue Private Endpoint with private DNS zone
+module queuePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = if (enableQueue) {
+  name: 'queue-private-endpoint-deployment'
+  params: {
+    name: 'queue-private-endpoint'
+    location: location
+    tags: tags
+    subnetResourceId: '${vnet.id}/subnets/${subnetName}'
     privateLinkServiceConnections: [
       {
         name: 'queuePrivateLinkConnection'
@@ -165,32 +73,28 @@ resource queuePrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = 
         }
       }
     ]
-    subnet: {
-      id: '${vnet.id}/subnets/${subnetName}'
+    customDnsConfigs: []
+    // Creates private DNS zone and links
+    privateDnsZoneGroup: {
+      name: 'queuePrivateDnsZoneGroup'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'storageQueueARecord'
+          privateDnsZoneResourceId: enableQueue ? privateDnsZoneQueueDeployment.outputs.resourceId : ''
+        }
+      ]
     }
   }
 }
 
-resource queuePrivateDnsZoneGroupName 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = if (enableQueue) {
-  parent: queuePrivateEndpoint
-  name: 'queuePrivateDnsZoneGroup'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'storageQueueARecord'
-        properties: {
-          privateDnsZoneId: queuePrivateDnsZone.id
-        }
-      }
-    ]
-  }
-}
-
-resource tablePrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = if (enableTable) {
-  name: 'table-private-endpoint'
-  location: location
-  tags: tags
-  properties: {
+// AVM module for Table Private Endpoint with private DNS zone
+module tablePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = if (enableTable) {
+  name: 'table-private-endpoint-deployment'
+  params: {
+    name: 'table-private-endpoint'
+    location: location
+    tags: tags
+    subnetResourceId: '${vnet.id}/subnets/${subnetName}'
     privateLinkServiceConnections: [
       {
         name: 'tablePrivateLinkConnection'
@@ -202,22 +106,72 @@ resource tablePrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = 
         }
       }
     ]
-    subnet: {
-      id: '${vnet.id}/subnets/${subnetName}'
+    customDnsConfigs: []
+    // Creates private DNS zone and links
+    privateDnsZoneGroup: {
+      name: 'tablePrivateDnsZoneGroup'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'storageTableARecord'
+          privateDnsZoneResourceId: enableTable ? privateDnsZoneTableDeployment.outputs.resourceId : ''
+        }
+      ]
     }
   }
 }
 
-resource tablePrivateDnsZoneGroupName 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = if (enableTable) {
-  parent: tablePrivateEndpoint
-  name: 'tablePrivateDnsZoneGroup'
-  properties: {
-    privateDnsZoneConfigs: [
+// AVM module for Blob Private DNS Zone
+module privateDnsZoneBlobDeployment 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (enableBlob) {
+  name: 'blob-private-dns-zone-deployment'
+  params: {
+    name: blobPrivateDNSZoneName
+    location: 'global'
+    tags: tags
+    virtualNetworkLinks: [
       {
-        name: 'storageTableARecord'
-        properties: {
-          privateDnsZoneId: tablePrivateDnsZone.id
-        }
+        name: '${resourceName}-blob-link-${take(toLower(uniqueString(resourceName, virtualNetworkName)), 4)}'
+        virtualNetworkResourceId: vnet.id
+        registrationEnabled: false
+        location: 'global'
+        tags: tags
+      }
+    ]
+  }
+}
+
+// AVM module for Queue Private DNS Zone
+module privateDnsZoneQueueDeployment 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (enableQueue) {
+  name: 'queue-private-dns-zone-deployment'
+  params: {
+    name: queuePrivateDNSZoneName
+    location: 'global'
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        name: '${resourceName}-queue-link-${take(toLower(uniqueString(resourceName, virtualNetworkName)), 4)}'
+        virtualNetworkResourceId: vnet.id
+        registrationEnabled: false
+        location: 'global'
+        tags: tags
+      }
+    ]
+  }
+}
+
+// AVM module for Table Private DNS Zone
+module privateDnsZoneTableDeployment 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (enableTable) {
+  name: 'table-private-dns-zone-deployment'
+  params: {
+    name: tablePrivateDNSZoneName
+    location: 'global'
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        name: '${resourceName}-table-link-${take(toLower(uniqueString(resourceName, virtualNetworkName)), 4)}'
+        virtualNetworkResourceId: vnet.id
+        registrationEnabled: false
+        location: 'global'
+        tags: tags
       }
     ]
   }
