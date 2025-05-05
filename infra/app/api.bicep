@@ -80,10 +80,10 @@ module api 'br/public:avm/res/web/site:0.15.1' = {
         AzureWebJobsStorage__clientId: identityClientId
         
         // Include storage endpoint settings conditionally based on feature flags
-        AzureWebJobsStorage__blobEndpoint: enableBlob ? stg.properties.primaryEndpoints.blob : null
-        AzureWebJobsStorage__queueEndpoint: enableQueue ? stg.properties.primaryEndpoints.queue : null
-        AzureWebJobsStorage__tableEndpoint: enableTable ? stg.properties.primaryEndpoints.table : null
-        AzureWebJobsStorage__fileEndpoint: enableFile ? stg.properties.primaryEndpoints.file : null
+        AzureWebJobsStorage__blobServiceUri: enableBlob ? stg.properties.primaryEndpoints.blob : null
+        AzureWebJobsStorage__queueServiceUri: enableQueue ? stg.properties.primaryEndpoints.queue : null
+        AzureWebJobsStorage__tableServiceUri: enableTable ? stg.properties.primaryEndpoints.table : null
+        AzureWebJobsStorage__fileServiceUri: enableFile ? stg.properties.primaryEndpoints.file : null
         
         // Application Insights settings are always included
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: applicationInsightsIdentity
