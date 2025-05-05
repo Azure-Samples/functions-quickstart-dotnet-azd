@@ -7,7 +7,40 @@ param environmentName string
 
 @minLength(1)
 @description('Primary location for all resources & Flex Consumption Function App')
-@allowed(['australiaeast', 'centralindia', 'centralus', 'eastasia', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'northcentralus', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westcentralus', 'westeurope', 'westus2', 'eastus2euap'])
+@allowed([
+  'australiaeast'
+  'australiasoutheast'
+  'brazilsouth'
+  'canadacentral'
+  'centralindia'
+  'centralus'
+  'eastasia'
+  'eastus'
+  'eastus2'
+  'eastus2euap'
+  'francecentral'
+  'germanywestcentral'
+  'italynorth'
+  'japaneast'
+  'koreacentral'
+  'northcentralus'
+  'northeurope'
+  'norwayeast'
+  'southafricanorth'
+  'southcentralus'
+  'southeastasia'
+  'southindia'
+  'spaincentral'
+  'swedencentral'
+  'uaenorth'
+  'uksouth'
+  'ukwest'
+  'westcentralus'
+  'westeurope'
+  'westus'
+  'westus2'
+  'westus3'
+])
 @metadata({
   azd: {
     type: 'location'
