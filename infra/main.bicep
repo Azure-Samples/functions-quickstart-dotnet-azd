@@ -116,7 +116,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.8.3' = {
 
 // Define the configuration object locally to pass to the modules
 var storageEndpointConfig = {
-  enableBlob: true  // Required for AzureWebJobsStorage and .zip deployment
+  enableBlob: true  // Required for AzureWebJobsStorage, .zip deployment, Event Hubs trigger and Timer trigger checkpointing
   enableQueue: false  // Required for Durable Functions and MCP trigger
   enableTable: false  // Required for Durable Functions and OpenAI triggers and bindings
   enableFiles: false   // Not required, used in legacy scenarios
