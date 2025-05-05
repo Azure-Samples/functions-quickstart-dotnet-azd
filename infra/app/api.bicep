@@ -16,6 +16,10 @@ param instanceMemoryMB int = 2048
 param maximumInstanceCount int = 100
 param identityId string = ''
 param identityClientId string = ''
+param enableBlob bool = true
+param enableQueue bool = false
+param enableTable bool = false
+param enableFile bool = false
 
 @allowed(['SystemAssigned', 'UserAssigned'])
 param identityType string = 'UserAssigned'
@@ -70,20 +74,24 @@ module api 'br/public:avm/res/web/site:0.15.1' = {
       alwaysOn: false
     }
     virtualNetworkSubnetId: !empty(virtualNetworkSubnetId) ? virtualNetworkSubnetId : null
-    appSettingsKeyValuePairs: union(appSettings,
-      {
-        AzureWebJobsStorage__blobEndpoint: stg.properties.primaryEndpoints.blob
-        AzureWebJobsStorage__queueEndpoint: stg.properties.primaryEndpoints.queue
-        AzureWebJobsStorage__tableEndpoint: stg.properties.primaryEndpoints.table
-        AzureWebJobsStorage__fileEndpoint: stg.properties.primaryEndpoints.file
-        AzureWebJobsStorage__credential : 'managedidentity'
-        AzureWebJobsStorage__clientId : identityClientId
+    appSettingsKeyValuePairs: union(appSettings, {
+        // Only include required credential settings unconditionally
+        AzureWebJobsStorage__credential: 'managedidentity'
+        AzureWebJobsStorage__clientId: identityClientId
+        
+        // Include storage endpoint settings conditionally based on feature flags
+        AzureWebJobsStorage__blobEndpoint: enableBlob ? stg.properties.primaryEndpoints.blob : null
+        AzureWebJobsStorage__queueEndpoint: enableQueue ? stg.properties.primaryEndpoints.queue : null
+        AzureWebJobsStorage__tableEndpoint: enableTable ? stg.properties.primaryEndpoints.table : null
+        AzureWebJobsStorage__fileEndpoint: enableFile ? stg.properties.primaryEndpoints.file : null
+        
+        // Application Insights settings are always included
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: applicationInsightsIdentity
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
       })
   }
 }
 
-
 output SERVICE_API_NAME string = api.outputs.name
-output SERVICE_API_IDENTITY_PRINCIPAL_ID string = identityType == 'SystemAssigned' ? api.outputs.systemAssignedMIPrincipalId : ''
+// Ensure output is always string, handle potential null from module output if SystemAssigned is not used
+output SERVICE_API_IDENTITY_PRINCIPAL_ID string = identityType == 'SystemAssigned' ? api.outputs.?systemAssignedMIPrincipalId ?? '' : ''
