@@ -101,7 +101,7 @@ module api 'br/public:avm/res/web/site:0.15.1' = {
       alwaysOn: false
     }
     virtualNetworkSubnetId: !empty(virtualNetworkSubnetId) ? virtualNetworkSubnetId : null
-    appSettingsKeyValuePairs: union(appSettings, allAppSettings)
+    appSettingsKeyValuePairs: allAppSettings
   }
 }
 
