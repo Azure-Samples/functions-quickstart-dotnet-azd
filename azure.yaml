@@ -2,7 +2,7 @@
 
 name: starter-dotnet8-flex-func
 metadata:
-  template: functions-quickstart-dotnet-azd@1.0.0
+  template: functions-quickstart-dotnet-azd@1.1.0
 services:
   api:
     project: ./http/
