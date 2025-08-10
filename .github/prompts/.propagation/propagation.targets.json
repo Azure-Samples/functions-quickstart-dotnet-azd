@@ -1,0 +1,199 @@
+{
+  "generated": "2025-08-10T21:58:11.189Z",
+  "sourcePr": "Azure-Samples/functions-quickstart-dotnet-azd#18",
+  "targets": [
+    {
+      "repo": "Azure-Samples/functions-quickstart-dotnet-azd",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd",
+      "status": "merged",
+      "prNumber": 18,
+      "attempts": 0,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd/pull/18",
+      "notes": "Source repository - changes merged"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob",
+      "status": "pr-open",
+      "prNumber": 8,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob/pull/8",
+      "notes": "PR exists - Remove deprecated App Insights output (propagation from #18)"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb",
+      "status": "pr-open",
+      "prNumber": 3,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb/pull/3",
+      "notes": "PR exists - Fixed APPLICATIONINSIGHTS_CONNECTION_STRING output"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-dotnet-azd-sql",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql",
+      "status": "pr-open",
+      "prNumber": 10,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql/pull/10",
+      "notes": "PR exists - Remove deprecated App Insights output (propagation from #18)"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-dotnet-azd-timer",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-timer",
+      "status": "pr-open",
+      "issueNumber": 7,
+      "prNumber": 1,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/paulyuk/functions-quickstart-dotnet-azd-timer/pull/1",
+      "notes": "PR created via fork-first workflow to paulyuk profile"
+    },
+    {
+      "repo": "Azure-Samples/durable-functions-quickstart-dotnet-azd",
+      "repoUrl": "https://github.com/Azure-Samples/durable-functions-quickstart-dotnet-azd",
+      "status": "pr-open",
+      "issueNumber": 5,
+      "prNumber": 1,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/paulyuk/durable-functions-quickstart-dotnet-azd/pull/1",
+      "notes": "PR created via fork-first workflow to paulyuk profile"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-python-http-azd",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-python-http-azd",
+      "status": "pr-open",
+      "prNumber": 17,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-python-http-azd/pull/17",
+      "notes": "PR exists - Remove deprecated App Insights output (propagation from #18). Note: PR #19 by Copilot also exists."
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-python-azd-sql",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-sql",
+      "status": "pr-open",
+      "attempts": 0,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-sql/pull/2",
+      "notes": "PR already exists",
+      "prNumber": 2
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-python-azd-cosmosdb",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb",
+      "status": "pr-open",
+      "attempts": 0,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb/pull/1",
+      "notes": "PR already exists",
+      "prNumber": 1
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-python-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-eventgrid-blob",
+      "status": "pr-open",
+      "prNumber": 3,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-python-azd-eventgrid-blob/pull/3",
+      "notes": "PR created successfully - removed APPLICATIONINSIGHTS_CONNECTION_STRING output"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-typescript-azd",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd",
+      "status": "pr-open",
+      "prNumber": 12,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd/pull/12",
+      "notes": "PR exists - Remove deprecated App Insights output (propagation from #18). Note: PR #14 by Copilot also exists."
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-typescript-azd-sql",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql",
+      "status": "pr-open",
+      "attempts": 0,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql/pull/2",
+      "notes": "PR already exists",
+      "prNumber": 2
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-typescript-azd-cosmosdb",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb",
+      "status": "pr-open",
+      "attempts": 0,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb/pull/3",
+      "notes": "PR already exists",
+      "prNumber": 3
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob",
+      "status": "pr-open",
+      "prNumber": 9,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob/pull/9",
+      "notes": "PR created successfully - removed APPLICATIONINSIGHTS_CONNECTION_STRING output"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-javascript-azd",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-javascript-azd",
+      "status": "pr-open",
+      "prNumber": 16,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-javascript-azd/pull/16",
+      "notes": "PR created via fork - already ready for review"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-javascript-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-javascript-azd-eventgrid-blob",
+      "status": "no-changes-needed",
+      "attempts": 1,
+      "lastChangeType": "analysis",
+      "lastChangeUrl": null,
+      "notes": "No infrastructure files present - PR #18 changes not applicable"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-powershell-azd",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-powershell-azd",
+      "status": "pr-open",
+      "prNumber": 10,
+      "attempts": 1,
+      "lastChangeType": "pr",
+      "lastChangeUrl": "https://github.com/Azure-Samples/functions-quickstart-powershell-azd/pull/10",
+      "notes": "PR created via fork - already ready for review"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-powershell-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-powershell-azd-eventgrid-blob",
+      "status": "no-changes-needed",
+      "attempts": 1,
+      "lastChangeType": "analysis",
+      "lastChangeUrl": null,
+      "notes": "No infrastructure files present - PR #18 changes not applicable"
+    },
+    {
+      "repo": "Azure-Samples/functions-quickstart-java-azd-eventgrid-blob",
+      "repoUrl": "https://github.com/Azure-Samples/functions-quickstart-java-azd-eventgrid-blob",
+      "status": "no-changes-needed",
+      "attempts": 1,
+      "lastChangeType": "analysis",
+      "lastChangeUrl": null,
+      "notes": "No infrastructure files present - PR #18 changes not applicable"
+    }
+  ],
+  "totalRepositories": 19,
+  "lastDiscovery": "2025-08-10T21:14:34.733Z",
+  "discoveryMethod": "GitHub search: functions-quickstart azd org:Azure-Samples",
+  "lastUpdate": "Propagation completed - 2 PRs created, 3 repos required no changes"
+}
