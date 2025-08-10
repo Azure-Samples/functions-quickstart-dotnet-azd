@@ -1,5 +1,30 @@
 # Batch Propagation Guide for Azure Functions AZD Templates
 
+## 🚨 CRITICAL CONTEXT PRESERVATION - READ FIRST
+
+### WORKFLOW MEMORY ANCHORS (Preserve Across Conversation Summaries):
+- **GitHub Operations**: ONLY use `mcp_github_*` tools (NEVER CLI)
+- **Authentication Failures**: Fork-first workflow (`mcp_github_fork_repository`)  
+- **Status Tracking**: Update JSON immediately after operations
+- **Validation**: Generate HTML reports for verification
+
+### GitHub MCP Tools Enforcement:
+```
+✅ MANDATORY: mcp_github_create_pull_request_with_copilot
+✅ MANDATORY: mcp_github_list_pull_requests
+✅ MANDATORY: mcp_github_get_pull_request_*
+✅ FALLBACK: mcp_github_fork_repository
+❌ FORBIDDEN: gh CLI, git commands, terminal GitHub ops
+```
+
+### Quality Gates (ENFORCE ALWAYS):
+- All PRs tracked with GitHub MCP validation
+- Consistent JSON schema across all entries
+- Immediate status updates after operations  
+- HTML report generation for final validation
+
+---
+
 ## Overview
 This guide documents the successful workflow for propagating changes across multiple Azure Functions AZD template repositories using GitHub MCP tools and local git operations.
 

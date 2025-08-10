@@ -2,11 +2,19 @@
 
 This directory contains a comprehensive system for dynamic discovery, change propagation, and interactive reporting across Azure Functions AZD template repositories.
 
-## 📁 Current File Structure (Simplified August 2025)
+## � CONTEXT RECOVERY TOOL
 
-### 🎯 Essential Files (2 Only)
-- **`PROPAGATION_PROMPT.md`** - Single ready-to-use prompt for triggering complete workflows
-- **`PROPAGATION_INSTRUCTIONS.md`** - Complete technical documentation and troubleshooting guide
+**If conversation context is lost after summarization**, use this recovery command:
+```
+Please read the GitHub MCP context anchors from .github/prompts/.propagation/github-mcp-reference-card.md and apply them to this conversation.
+```
+
+## �📁 Current File Structure (Simplified August 2025)
+
+### 🎯 Essential Files (Enhanced with Context Preservation)
+- **`PROPAGATION_PROMPT.md`** - Single ready-to-use prompt with GitHub MCP tool enforcement
+- **`PROPAGATION_INSTRUCTIONS.md`** - Complete technical documentation with context anchors
+- **`.propagation/github-mcp-reference-card.md`** - Context recovery tool for lost conversations
 
 ### 📐 System Blueprint  
 - **`PR-Propagation-Batch-Spec.md`** - Authoritative specification that can regenerate the entire system

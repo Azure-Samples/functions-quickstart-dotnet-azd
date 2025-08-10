@@ -22,23 +22,36 @@ node -e "console.log(JSON.parse(require('fs').readFileSync('propagation.targets.
 # Use proven local file modification approach
 ```
 
-### Phase 3: PR Creation (GitHub MCP Tools)
+### Phase 3: PR Creation & Draft Management (GitHub MCP Tools Only)
 ```bash
-# Use GitHub MCP tools for reliable PR creation
-# Update JSON with PR numbers and URLs
-# Target status: 'pr-open' for ALL repositories
-# Avoid issues unless PR creation fails after multiple attempts
+# CRITICAL: Use GitHub MCP tools exclusively (NOT CLI scripts)
+# Primary tools: mcp_github_create_pull_request_with_copilot, mcp_github_get_pull_request
+
+# 1. Create PRs using GitHub MCP tools
+# 2. Check for draft status: mcp_github_get_pull_request -> Look for "draft":true
+# 3. Convert any draft PRs: mcp_github_update_pull_request with draft=false
+# 4. Update JSON status to 'pr-open' (ready for review)
+# 5. Target: ALL repositories with 'pr-open' status and draft=false
+
+# NO DRAFT PRS ALLOWED - Immediate conversion required
+# Fallback: Fork-based PR creation if direct access fails
 ```
 
-### Phase 4: Quality Verification & Reporting
+### Phase 4: Report Generation & Quality Verification
 ```bash
-# Generate interactive HTML report
+# Generate interactive HTML report using correct path
+node .github/prompts/.propagation/generate-report.js
+
+# Alternative if npm script exists:
 npm run report
 
-# Open in browser for verification
-open propagation-status-report.html
+# View report in VS Code Simple Browser
+# Use open_simple_browser tool with file:// URL
 
-# Quality check: No repositories should remain with status 'discovered' or 'ready-for-pr'
+# Quality checks:
+# - All PRs must be draft=false (ready for review)
+# - Status should be 'pr-open' not 'pr-created'
+# - No repositories with 'discovered' or 'ready-for-pr' status
 grep -E "(discovered|ready-for-pr)" propagation.targets.json
 ```
 
@@ -50,19 +63,27 @@ grep -E "(discovered|ready-for-pr)" propagation.targets.json
 - **Validation**: Never proceed without JSON integration
 - **Historical Issue**: Discovery found 19 repos but only 12 tracked → data loss
 
-### 2. PR-First Approach  
+### 2. GitHub MCP Tools & Draft PR Management
+- **Mandatory Tool Usage**: GitHub MCP tools exclusively for all GitHub operations
+- **Prohibited**: CLI scripts (gh, git) for GitHub API interactions
+- **Required Tools**: mcp_github_get_pull_request, mcp_github_update_pull_request, mcp_github_create_pull_request_with_copilot
+- **NO DRAFT PRS**: All PRs must be ready for review (draft=false) immediately
+- **Draft Conversion**: Check "draft":true in API responses and convert using draft=false parameter
+- **Status Accuracy**: Use 'pr-open' for ready PRs, not ambiguous 'pr-created'
+
+### 3. PR-First Approach  
 - **Priority**: Pull request creation over issue creation
 - **Target Status**: 'pr-open' not 'issue-open' or 'discovered'
 - **Fallback**: Only create issues if PR creation fails after multiple attempts
 - **Rationale**: PRs provide better automation and tracking
 
-### 3. Single Source of Truth
+### 4. Single Source of Truth
 - **File**: propagation.targets.json is authoritative tracking file
 - **Updates**: All status changes must be persisted to JSON
 - **Reporting**: HTML report reads exclusively from JSON
 - **Consistency**: No data exists outside the tracking file
 
-### 4. Complete Coverage Verification
+### 5. Complete Coverage Verification
 - **Check**: No repositories should remain with status 'discovered'
 - **Validation**: Interactive HTML report shows complete propagation scope
 - **Requirements**: All PRs must have valid numbers and URLs
@@ -419,11 +440,27 @@ integrateDiscovery(newRepos);
 
 ## Automation Requirements
 
-### GitHub MCP Tools
-- Repository search and discovery
-- Pull request creation and management
-- Issue creation (fallback only)
-- Status tracking and updates
+### GitHub MCP Tools (Mandatory - No CLI Scripts)
+**Critical Requirement**: Use GitHub MCP tools exclusively for all GitHub operations
+
+**Primary Tools**:
+- **mcp_github_get_pull_request** - Check PR status and draft flag
+- **mcp_github_update_pull_request** - Convert draft PRs to ready (draft=false)
+- **mcp_github_create_pull_request_with_copilot** - Create PRs via Copilot agent
+- **mcp_github_create_pull_request** - Direct PR creation when needed
+- **mcp_github_list_pull_requests** - List existing PRs
+- **mcp_github_search_pull_requests** - Search for PRs by criteria
+
+**Draft PR Management**:
+- **NO DRAFT PRS ALLOWED** - All PRs must be ready for review immediately
+- Check API response for "draft":true flag
+- Convert any draft PRs using draft=false parameter
+- Update JSON status from 'pr-created' to 'pr-open' after conversion
+
+**Quality Standards**:
+- All GitHub operations via MCP tools (not CLI scripts)
+- Target status: 'pr-open' (ready for review) not 'pr-created' (ambiguous)
+- Immediate draft conversion for any PRs created as drafts
 
 ### Local Environment  
 - Node.js for script execution
@@ -445,11 +482,16 @@ integrateDiscovery(newRepos);
 
 ### Propagation Metrics  
 - **PR Creation**: > 95% success rate for pull requests
+- **Draft PR Management**: 0% draft PRs (all must be draft=false)
+- **Tool Compliance**: 100% GitHub MCP tool usage (no CLI scripts)
+- **Status Accuracy**: 'pr-open' for ready PRs (not 'pr-created')
 - **Status Completion**: 0% repositories with 'discovered' status
 - **Quality**: All 'pr-open' status has valid PR numbers/URLs
 
 ### Reporting Metrics
 - **Accuracy**: HTML report reflects complete propagation scope
+- **Command Path**: Use `node .github/prompts/.propagation/generate-report.js`
+- **Viewing**: VS Code Simple Browser with file:// URL
 - **Usability**: Interactive navigation and progress dashboards
 - **Verification**: Visual confirmation of successful propagation
 

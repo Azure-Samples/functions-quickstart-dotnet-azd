@@ -47,17 +47,27 @@ let newReposAdded = 0;
 let existingReposPreserved = 0;
 
 // Process discovered repositories
-discoveredRepos.forEach(repoName => {
-    if (!repoName.startsWith('Azure-Samples/')) {
-        repoName = `Azure-Samples/${repoName}`;
+discoveredRepos.forEach(repoInput => {
+    // Clean up the input - handle both full URLs and repo names
+    let repoName;
+    if (repoInput.startsWith('https://github.com/')) {
+        // Extract repo name from URL
+        repoName = repoInput.replace('https://github.com/', '');
+    } else if (repoInput.startsWith('Azure-Samples/')) {
+        // Already properly formatted
+        repoName = repoInput;
+    } else {
+        // Add Azure-Samples prefix
+        repoName = `Azure-Samples/${repoInput}`;
     }
     
     const repoUrl = `https://github.com/${repoName}`;
     
+    // Check for duplicates using normalized repo name (idempotent check)
     if (existingRepos.has(repoName)) {
         // Repository already exists - preserve its data
         existingReposPreserved++;
-        console.log(`✅ Preserved existing: ${repoName}`);
+        console.log(`✅ Already tracked: ${repoName} (${existingRepos.get(repoName).status})`);
     } else {
         // New repository - add with 'ready-for-pr' status
         const newRepo = {
