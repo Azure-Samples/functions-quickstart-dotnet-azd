@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Functions AZD Templates - Propagation Status Report</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        header h2 {
+            color: #7f8c8d;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .timestamp {
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+        
+        .timestamp a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .timestamp a:hover {
+            text-decoration: underline;
+        }
+        
+        section {
+            margin-bottom: 30px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .stat-card.open {
+            border-left-color: #f39c12;
+        }
+        
+        .stat-card.merged {
+            border-left-color: #27ae60;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+        }
+        
+        .repo-table {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: #34495e;
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .repo-link {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .repo-link:hover {
+            text-decoration: underline;
+        }
+        
+        .pr-link {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .pr-link:hover {
+            text-decoration: underline;
+        }
+        
+        .issue-link {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .issue-link:hover {
+            text-decoration: underline;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .badge.merged {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge.open {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge.issue {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .badge.discovered {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .badge.ready {
+            background: #d1f2eb;
+            color: #00503c;
+        }
+        
+        .badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge.pending {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .notes {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .action-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .action-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .action-card li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .action-card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        
+        .action-card a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+        
+        .action-card a:hover {
+            text-decoration: underline;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        
+        footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        footer p {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Azure Functions AZD Templates</h1>
+            <h2>Propagation Status Report</h2>
+            <p class="timestamp">Generated: 8/10/2025, 1:49:09 PM | Source: <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd/pull/18" target="_blank">Azure-Samples/functions-quickstart-dotnet-azd#18</a></p>
+        </header>
+
+        <section class="summary">
+            <h3>📊 Summary</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">40</div>
+                    <div class="stat-label">Total Repositories</div>
+                </div>
+                <div class="stat-card open">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Open PRs</div>
+                </div>
+                <div class="stat-card merged">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Merged PRs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3%</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="progress">
+            <h3>📈 Overall Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 3%"></div>
+            </div>
+            <p>1 of 40 repositories updated</p>
+        </section>
+
+        
+        <section class="repo-group">
+            <h3>🔷 .NET Templates</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row merged">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-dotnet-azd
+                </a>
+            </td>
+            <td><span class="badge merged">✅ MERGED</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd/pull/18" target="_blank" class="pr-link">#18</a></td>
+            <td class="notes">Source repository - changes merged</td>
+        </tr>
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-dotnet-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob/issues/9" target="_blank" class="issue-link">#9</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-dotnet-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb/issues/4" target="_blank" class="issue-link">#4</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-dotnet-azd-sql
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql/issues/11" target="_blank" class="issue-link">#11</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-timer" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-dotnet-azd-timer
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-timer/issues/7" target="_blank" class="issue-link">#7</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/durable-functions-quickstart-dotnet-azd" target="_blank" class="repo-link">
+                    🔗 durable-functions-quickstart-dotnet-azd
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/durable-functions-quickstart-dotnet-azd/issues/5" target="_blank" class="issue-link">#5</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-dotnet-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-dotnet-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-sql
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/durable-functions-quickstart-dotnet-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/durable-functions-quickstart-dotnet-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-timer" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-dotnet-azd-timer
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="repo-group">
+            <h3>🟨 JavaScript/TypeScript Templates</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-typescript-azd
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd/issues/13" target="_blank" class="issue-link">#13</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-typescript-azd-sql
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql/pull/2" target="_blank" class="pr-link">#2</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-typescript-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb/pull/1" target="_blank" class="pr-link">#1</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row discovered">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-typescript-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge discovered">🔍 DISCOVERED</span></td>
+            <td>N/A</td>
+            <td class="notes">Newly discovered repository - no action taken yet</td>
+        </tr>
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-javascript-azd" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-javascript-azd
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-javascript-azd/pull/2" target="_blank" class="pr-link">#2</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row discovered">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-javascript-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-javascript-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge discovered">🔍 DISCOVERED</span></td>
+            <td>N/A</td>
+            <td class="notes">Newly discovered repository - no action taken yet</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-typescript-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-typescript-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-javascript-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-javascript-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-typescript-azd-sql
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-typescript-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-javascript-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-javascript-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-typescript-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="repo-group">
+            <h3>🐍 Python Templates</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row issue-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-python-http-azd" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-python-http-azd
+                </a>
+            </td>
+            <td><span class="badge issue">🔵 ISSUE OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-python-http-azd/issues/18" target="_blank" class="issue-link">#18</a></td>
+            <td class="notes">GitHub issue created for propagation tracking</td>
+        </tr>
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-python-azd-sql" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-python-azd-sql
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-python-azd-sql/pull/4" target="_blank" class="pr-link">#4</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-python-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb/pull/14" target="_blank" class="pr-link">#14</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row discovered">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-python-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-python-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge discovered">🔍 DISCOVERED</span></td>
+            <td>N/A</td>
+            <td class="notes">Newly discovered repository - no action taken yet</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-python-http-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-python-http-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-python-azd-sql" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-python-azd-sql
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-python-azd-cosmosdb
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-python-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-python-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/durable-functions-order-processing-python" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/durable-functions-order-processing-python
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="repo-group">
+            <h3>💙 PowerShell Templates</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row pr-open">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-powershell-azd" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-powershell-azd
+                </a>
+            </td>
+            <td><span class="badge open">🟡 PR OPEN</span></td>
+            <td><a href="https://github.com/Azure-Samples/functions-quickstart-powershell-azd/pull/16" target="_blank" class="pr-link">#16</a></td>
+            <td class="notes">removed AppInsights output, PR created</td>
+        </tr>
+        <tr class="repo-row discovered">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-powershell-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-powershell-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge discovered">🔍 DISCOVERED</span></td>
+            <td>N/A</td>
+            <td class="notes">Newly discovered repository - no action taken yet</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-powershell-azd" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-powershell-azd
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-powershell-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-powershell-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="repo-group">
+            <h3>☕ Java Templates</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row discovered">
+            <td>
+                <a href="https://github.com/Azure-Samples/functions-quickstart-java-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 functions-quickstart-java-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge discovered">🔍 DISCOVERED</span></td>
+            <td>N/A</td>
+            <td class="notes">Newly discovered repository - no action taken yet</td>
+        </tr>
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/functions-quickstart-java-azd-eventgrid-blob" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/functions-quickstart-java-azd-eventgrid-blob
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="repo-group">
+            <h3>📦 Sample Applications</h3>
+            <div class="repo-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Status</th>
+                            <th>PR</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr class="repo-row ready-for-pr">
+            <td>
+                <a href="https://github.com/Azure-Samples/https://github.com/Azure-Samples/Durable-Functions-Order-Processing" target="_blank" class="repo-link">
+                    🔗 https://github.com/Azure-Samples/Durable-Functions-Order-Processing
+                </a>
+            </td>
+            <td><span class="badge ready">🚀 READY FOR PR</span></td>
+            <td>N/A</td>
+            <td class="notes">Discovered via dynamic discovery - ready for PR creation</td>
+        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="actions">
+            <h3>🔍 Quick Actions</h3>
+            <div class="action-grid">
+                <div class="action-card">
+                    <h4>For Maintainers</h4>
+                    <ul>
+                        <li><a href="https://github.com/pulls?q=is%3Apr+is%3Aopen+involves%3AAzure-Samples" target="_blank">Review All Open PRs</a></li>
+                        <li>Verify deployments work with <code>azd up</code></li>
+                    </ul>
+                </div>
+                <div class="action-card">
+                    <h4>For Contributors</h4>
+                    <ul>
+                        <li>Test changes in your environment</li>
+                        <li><a href="https://github.com/Azure-Samples/functions-quickstart-dotnet-azd" target="_blank">View source repository</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>🔗 <strong>Source Change:</strong> Remove ApplicationInsights outputs from main.bicep</p>
+            <p><em>This report is dynamically generated from propagation.targets.json</em></p>
+        </footer>
+    </div>
+</body>
+</html>

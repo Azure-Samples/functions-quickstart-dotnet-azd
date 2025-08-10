@@ -200,3 +200,39 @@ When you're done working with your function app and related resources, you can u
 ```shell
 azd down
 ```
+
+## 🔄 Template Propagation Workflow
+
+This repository serves as a source template for changes that need to be propagated across the Azure Functions AZD template family. The automated workflow includes:
+
+### Quick Start
+```bash
+# Navigate to propagation directory
+cd .github/prompts/.propagation
+
+# Generate dynamic status report
+npm run report
+
+# Open the interactive HTML report
+open propagation-status-report.html
+```
+
+### Batch Propagation
+Use the prompt template in `.github/prompts/batch-propagation-prompt.md` to automatically:
+
+1. **Discover targets** across Azure Functions AZD templates using multiple methods
+2. **Apply changes** consistently across all related repositories
+3. **Create pull requests** with enhanced validation and best practices
+4. **Track progress** in `propagation.targets.json`
+5. **Generate reports** with interactive HTML dashboards
+
+### Dynamic Reporting
+The propagation system includes a Node.js-based dynamic reporting tool that transforms JSON tracking data into beautiful, interactive HTML reports featuring:
+
+- 📊 **Progress dashboards** with completion statistics
+- 🏷️ **Technology groupings** (.NET, Python, JavaScript, etc.)
+- 🔗 **Clickable links** to repositories and pull requests
+- 📱 **Responsive design** for all devices
+- 🎯 **Real-time accuracy** - always reflects current JSON data
+
+**Documentation**: See `.github/prompts/.propagation/README.md` for complete workflow details and `.github/prompts/.propagation/WORKFLOW_INSTRUCTIONS.md` for detailed end-to-end process requirements.

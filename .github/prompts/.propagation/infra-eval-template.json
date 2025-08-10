@@ -1,0 +1,9 @@
+{
+  "sourcePr": "Azure-Samples/functions-quickstart-dotnet-azd#18",
+  "targetRepo": "<target repo>",
+  "evaluatedFiles": ["infra/main.bicep"],
+  "action": "no-op",
+  "removedOutputs": [],
+  "reason": "AppInsights connection string output already absent",
+  "timestampUtc": "<fill-in>"
+}

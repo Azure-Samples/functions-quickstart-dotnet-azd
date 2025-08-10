@@ -1,0 +1,16 @@
+{
+  "name": "propagation-reporter",
+  "version": "1.0.0",
+  "description": "Dynamic HTML report generator for Azure Functions AZD template propagation status",
+  "main": "generate-report.js",
+  "scripts": {
+    "report": "node generate-report.js",
+    "update-targets": "node update-targets.js",
+    "integrate-discovery": "node integrate-discovery.js",
+    "full-refresh": "npm run update-targets && npm run report",
+    "watch": "echo 'Use: fswatch propagation.targets.json | xargs -I {} npm run report' for auto-regeneration"
+  },
+  "keywords": ["azure", "functions", "azd", "propagation", "report"],
+  "author": "Azure Functions Team",
+  "license": "MIT"
+}
