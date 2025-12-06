@@ -33,6 +33,7 @@ jobs:
       with:
         name: test-results
         path: TestResults/**/*.trx
+        retention-days: 30
     
     - name: Upload coverage results
       uses: actions/upload-artifact@v4
@@ -40,12 +41,4 @@ jobs:
       with:
         name: coverage-results
         path: TestResults/**/coverage.cobertura.xml
-    
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Unit Test Results
-        path: TestResults/**/*.trx
-        reporter: dotnet-trx
-        fail-on-error: true
+        retention-days: 30
