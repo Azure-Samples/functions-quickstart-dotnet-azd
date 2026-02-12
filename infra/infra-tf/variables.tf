@@ -1,7 +1,7 @@
 # Input variables for the module
 
 variable "location" {
-  description = "The supported Azure location where the resource deployed"
+  description = "The supported Azure location where the resources are deployed"
   type        = string
 }
 

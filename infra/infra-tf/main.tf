@@ -9,13 +9,6 @@ locals {
   # Naming with abbreviations (matching Bicep abbreviations.json)
   function_app_name            = "func-api-${local.resource_token}"
   deployment_storage_container = "app-package-${substr(local.function_app_name, 0, 32)}-${substr(lower(local.resource_token), 0, 7)}"
-
-  # Storage endpoint configuration
-  storage_config = {
-    enable_blob  = true  # Required for AzureWebJobsStorage, .zip deployment, Event Hubs trigger and Timer trigger checkpointing
-    enable_queue = false # Required for Durable Functions and MCP trigger
-    enable_table = false # Required for Durable Functions and OpenAI triggers and bindings
-  }
 }
 
 resource "azurecaf_name" "rg_name" {
@@ -180,9 +173,10 @@ resource "azurerm_function_app_flex_consumption" "api" {
   # App Settings
   app_settings = {
     # Storage credential settings (managed identity)
-    "AzureWebJobsStorage__credential"     = "managedidentity"
-    "AzureWebJobsStorage__clientId"       = azurerm_user_assigned_identity.api_identity.client_id
-    "AzureWebJobsStorage__blobServiceUri" = azurerm_storage_account.function_storage.primary_blob_endpoint
+    "AzureWebJobsStorage__credential"      = "managedidentity"
+    "AzureWebJobsStorage__clientId"        = azurerm_user_assigned_identity.api_identity.client_id
+    "AzureWebJobsStorage__blobServiceUri"  = azurerm_storage_account.function_storage.primary_blob_endpoint
+    "AzureWebJobsStorage__queueServiceUri" = azurerm_storage_account.function_storage.primary_queue_endpoint
 
     # Application Insights (AAD auth)
     "APPLICATIONINSIGHTS_AUTHENTICATION_STRING" = "ClientId=${azurerm_user_assigned_identity.api_identity.client_id};Authorization=AAD"
