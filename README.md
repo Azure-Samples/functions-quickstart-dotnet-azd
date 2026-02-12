@@ -29,7 +29,7 @@ This codespace is already configured with the required tools to complete this tu
 
 ## Prerequisites
 
-+ [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
++ [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 + [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?pivots=programming-language-csharp#install-the-azure-functions-core-tools)
 + To use Visual Studio to run and debug locally:
   + [Visual Studio 2022](https://visualstudio.microsoft.com/vs/).
