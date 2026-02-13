@@ -31,7 +31,7 @@ azure.yaml                          - name: starter-dotnet10-flex-func
 <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
 <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
 <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.7" />
-<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="3.0.0" />
+<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
 <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.50.0" />
 ```
 
@@ -39,6 +39,7 @@ azure.yaml                          - name: starter-dotnet10-flex-func
 - Only use stable/GA versions (no preview, beta, or rc)
 - Verify compatibility between packages before updating
 - Check release notes for breaking changes
+- **Important**: Microsoft.ApplicationInsights.WorkerService 3.x has breaking OpenTelemetry changes - stay on 2.22.0 for compatibility
 - Always test locally after updates
 
 **Where to check versions:**

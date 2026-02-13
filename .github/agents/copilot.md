@@ -26,12 +26,13 @@ Always use the latest **stable** (non-preview) versions of packages:
 - `Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore` - ASP.NET Core integration
 
 **Monitoring Packages:**
-- `Microsoft.ApplicationInsights.WorkerService` - Application Insights base
+- `Microsoft.ApplicationInsights.WorkerService` - Application Insights base (use 2.22.0, not 3.x due to breaking changes)
 - `Microsoft.Azure.Functions.Worker.ApplicationInsights` - Functions-specific telemetry
 
 **Version Checking:**
 - Check NuGet.org for latest stable versions before updating
 - Avoid preview/rc packages unless explicitly required
+- **Important**: Use ApplicationInsights.WorkerService 2.22.0, not 3.x (3.0+ has breaking changes incompatible with current Functions Worker)
 - Test locally after any package updates
 
 ### 3. Infrastructure as Code (Bicep)
