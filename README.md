@@ -158,6 +158,38 @@ public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] Http
 }
 ```
 
+## Testing
+
+This project includes comprehensive unit tests for the HTTP trigger functions.
+
+### Running Unit Tests
+
+From the repository root, run:
+
+```shell
+# Run all tests
+dotnet test http.Tests/http.Tests.csproj
+
+# Run with detailed output
+dotnet test http.Tests/http.Tests.csproj --logger "console;verbosity=detailed"
+
+# Run with code coverage
+dotnet test http.Tests/http.Tests.csproj --collect:"XPlat Code Coverage"
+```
+
+### Test Coverage
+
+The unit tests cover:
+- **httpGetFunction**: Name parameter handling (valid, empty, null) and logging validation
+- **HttpPostBody**: Valid person data, validation failures, and error handling
+- **Total**: 10 tests covering primary functionality and error scenarios
+
+See [test-specification.md](./test-specification.md) for detailed test documentation and [test-report.md](./test-report.md) for the latest test results.
+
+### Continuous Integration
+
+Tests are automatically run on every push and pull request via GitHub Actions. See [.github/workflows/test.yml](.github/workflows/test.yml) for the workflow configuration.
+
 ## Deploy to Azure
 
 Run this command to provision the function app, with any required Azure resources, and deploy your code:
