@@ -11,6 +11,7 @@ urlFragment: starter-http-trigger-csharp
 languages:
 - csharp
 - bicep
+- terraform
 - azdeveloper
 ---
 -->
@@ -18,6 +19,8 @@ languages:
 # Azure Functions C# HTTP Trigger using Azure Developer CLI
 
 This template repository contains an HTTP trigger reference sample for functions written in C# (isolated process mode) and deployed to Azure using the Azure Developer CLI (`azd`). The sample uses managed identity and a virtual network to make sure deployment is secure by default. You can opt out of a VNet being used in the sample by setting VNET_ENABLED to false in the parameters.
+
+The infrastructure can be deployed using either Bicep (default) or Terraform. Both options provision the same Azure resources with identical security configurations.
 
 This source code supports the article [Quickstart: Create and deploy functions to Azure Functions using the Azure Developer CLI](https://learn.microsoft.com/azure/azure-functions/create-first-function-azure-developer-cli?pivots=programming-language-dotnet).
 
@@ -160,6 +163,8 @@ public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post")] Http
 
 ## Deploy to Azure
 
+### Option 1: Deploy using Bicep (default)
+
 Run this command to provision the function app, with any required Azure resources, and deploy your code:
 
 ```shell
@@ -172,6 +177,42 @@ By default, this sample prompts to enable a virtual network for enhanced securit
 azd env set VNET_ENABLED false
 azd up
 ```
+
+### Option 2: Deploy using Terraform
+
+This project also includes Terraform infrastructure-as-code files as an alternative to Bicep. To deploy using Terraform:
+
+1. Update your `azure.yaml` file to use the Terraform infrastructure provider. You can either:
+   - Manually edit `azure.yaml` and add these lines to the end:
+     ```yaml
+     infra:
+       provider: terraform
+       path: infra/infra-tf
+     ```
+   - Or copy the provided example file:
+     ```bash
+     cp azure.yaml.terraform-example azure.yaml
+     ```
+
+2. (Optional) Configure virtual network settings. Terraform deployment also supports VNet configuration:
+   ```bash
+   azd env set VNET_ENABLED false  # Disable VNet (default is false for Terraform)
+   ```
+
+3. Deploy with `azd`:
+   ```bash
+   azd up
+   ```
+
+The Terraform deployment will create the same infrastructure as the Bicep deployment, including:
+- Azure Function App (Flex Consumption)
+- Storage Account with managed identity authentication
+- Application Insights for monitoring
+- Log Analytics Workspace
+- User-assigned managed identity
+- RBAC role assignments
+
+### Deployment Parameters
 
 You're prompted to supply these required deployment parameters:
 
