@@ -9,12 +9,18 @@ var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
     .ConfigureServices(services =>
     {
+#if DEBUG
         if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")))
         {
             services.AddOpenTelemetry()
                 .UseFunctionsWorkerDefaults()
                 .UseAzureMonitorExporter();
         }
+#else
+        services.AddOpenTelemetry()
+            .UseFunctionsWorkerDefaults()
+            .UseAzureMonitorExporter();
+#endif
     })
     .Build();
 
