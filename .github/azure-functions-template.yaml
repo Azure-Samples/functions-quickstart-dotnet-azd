@@ -6,7 +6,7 @@ description: "Create a .NET isolated Azure Functions app with an HTTP trigger an
 
 projects:
   - name: Azure Functions HTTP Trigger (Bicep) QuickStart (.NET)
-    shortName: http-trigger-csharp-azd
+    shortName: functions-quickstart-dotnet-http
     root: .
     stack: dotnet
     language: "C#"
