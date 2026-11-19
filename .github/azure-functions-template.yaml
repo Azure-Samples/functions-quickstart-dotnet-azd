@@ -1,0 +1,12 @@
+# This descriptor drives template package creation in the packaging pipeline.
+schemaVersion: 1
+
+identity: Azure.Functions.Templates.HttpDotNet
+description: "Create a .NET isolated Azure Functions app with an HTTP trigger and Bicep infrastructure for deployment using azd."
+
+projects:
+  - name: Azure Functions HTTP Trigger (Bicep) QuickStart (.NET)
+    shortName: functions-quickstart-dotnet-http
+    root: .
+    stack: dotnet
+    language: "C#"
